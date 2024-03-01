@@ -4,7 +4,6 @@ import {
   Drawer,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -29,7 +28,7 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
-import { createPayment } from "@/actions/create-payment";
+import { createPayment } from "@/actions";
 import { payingMonthData } from "@/lib/data";
 import { paymentSchema } from "@/schemas/payment-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -75,7 +74,7 @@ export default function MakePaymentForm({ studentId }: { studentId: string }) {
                   <FormItem>
                     <FormLabel>Amount</FormLabel>
                     <FormControl>
-                      <Input placeholder="250" type="number" {...field} />
+                      <Input placeholder="₹ 500" type="number" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

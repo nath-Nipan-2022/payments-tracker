@@ -10,13 +10,8 @@ export default function Header() {
           href="/"
           className="flex items-center gap-3 font-bold text-inherit text-teal-800"
         >
-          <Image
-            src={"/src/app/favicon.ico"}
-            alt="logo"
-            width={24}
-            height={24}
-          />
-          CheckPayments
+          <Image src="/logo.png" alt="logo" width={24} height={24} />
+          EduPurse
         </Link>
 
         <HeaderAuth />

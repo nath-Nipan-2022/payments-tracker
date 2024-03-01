@@ -15,7 +15,7 @@ interface StudentShowProps {
 
 export default function StudentShow({ student }: StudentShowProps) {
   return (
-    <section className="bg-teal-50">
+    <section className="bg-teal-50 rounded-md">
       <Table>
         <TableHeader>
           <TableRow>

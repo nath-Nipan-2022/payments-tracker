@@ -1,3 +1,4 @@
+import { deleteStudent } from "@/actions/delete-student";
 import MakePaymentForm from "@/components/payment/make-payment-form";
 import PaymentsTable from "@/components/payment/payments-table";
 import StudentShow from "@/components/student/student-show";
@@ -22,7 +23,6 @@ export default async function StudentPage({ params }: StudentPageParams) {
   }
 
   const payments = await fetchPayments(params.slug, params.id);
-  // console.log(payments);
 
   return (
     <main className="min-h-screen">
@@ -71,7 +71,12 @@ export default async function StudentPage({ params }: StudentPageParams) {
               irreversible and can not be undone.
             </p>
           </div>
-          <Button variant="destructive">Delete</Button>
+          <Button
+            variant="destructive"
+            // onClick={() => deleteStudent(params.id)}
+          >
+            Delete
+          </Button>
         </section>
       </div>
     </main>

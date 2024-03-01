@@ -29,15 +29,14 @@ import {
 
 import { signOut } from "@/actions";
 import { Button } from "./ui/button";
-import { useSession } from "next-auth/react";
-import { User } from "@prisma/client";
+import { User } from "next-auth";
 import { paths } from "@/paths";
 
-interface ProfileType {
+interface ProfileProps {
   user: User;
 }
 
-export default function Profile({ user }: ProfileType) {
+export default function Profile({ user }: ProfileProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -87,7 +86,7 @@ export default function Profile({ user }: ProfileType) {
           </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <Link href={"#github"}>
+        <Link href="https://github.com/nath-Nipan-2022">
           <DropdownMenuItem>
             <Github className="mr-2 h-4 w-4" />
             <span>GitHub</span>

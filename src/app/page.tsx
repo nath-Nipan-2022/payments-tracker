@@ -16,42 +16,50 @@ export default async function Home() {
     (student) => new Date().getMonth() - student.admissionDate.getMonth() <= 2
   );
 
+  const hasUserId = user?.id;
+
   return (
-    <main className="flex min-h-screen flex-col p-24">
+    <main
+      className={`flex min-h-dvh flex-col px-6 md:p-24 ${
+        !hasUserId ? "items-center justify-center" : ""
+      } text-center md:text-left`}
+    >
       <article className="py-10">
-        <h1 className="text-4xl md:text-7xl text-teal-800 font-bold lg:leading-none">
-          Welcome <span className="text-blue-600">{user?.name}</span>, Track
-          students payments details in a sec.
+        <h1 className="text-2xl sm:text-4xl md:text-7xl text-teal-800 font-bold leading-normal lg:leading-none">
+          <span className="text-blue-600">Welcome to EduPurse</span> -
+          <br className="hidden md:block" /> Your Ultimate Payment Tracking
+          Solution.
         </h1>
-        <p className="text-gray-500 mt-8 text-lg">
-          No need to wait and write down in notebook...
+        <p className="text-gray-500 mt-4 md:text-xl">
+          Effortlessly Manage and Monitor Your Student Payments.
         </p>
-        <div className="mt-4 flex gap-4">
-          <Button variant="secondary">See Demo!</Button>
-          {user?.id ? (
+        <div className="mt-8 flex justify-center md:justify-start">
+          {hasUserId ? (
             <Button asChild>
-              <Link href={paths.newStudent(user?.id)}>Add New Student</Link>
+              <Link href={paths.newStudent(hasUserId)}>Add New Student</Link>
             </Button>
           ) : (
-            <Button asChild onClick={() => signIn()}>
-              Add New Student
-            </Button>
+            <form action={signIn}>
+              <Button>Sign in with Google</Button>
+            </form>
           )}
         </div>
       </article>
 
-      <article className="mt-10">
-        <div className="flex justify-between">
-          <h2 className="text-2xl mb-4 font-medium text-teal-600">
-            Recent Students
-          </h2>
+      {hasUserId ? (
+        <article className="mt-10">
+          <div className="flex justify-between">
+            <h2 className="text-2xl mb-4 font-medium text-teal-600">
+              Recent Students
+            </h2>
 
-          <Button variant="outline">
-            <Link href={paths.showAllStudents(`${user?.id}`)}>View All</Link>
-          </Button>
-        </div>
-        <StudentsTable students={recentStudents} />
-      </article>
+            <Button variant="outline">
+              <Link href={paths.showAllStudents(`${user?.id}`)}>View All</Link>
+            </Button>
+          </div>
+          <StudentsTable students={recentStudents} />
+        </article>
+      ) : null}
     </main>
   );
 }

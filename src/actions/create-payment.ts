@@ -19,8 +19,6 @@ export async function createPayment(
   state: CreatePaymentState,
   data: z.infer<typeof paymentSchema>
 ) {
-  console.log(slug, state, data);
-
   const result = paymentSchema.safeParse(data);
 
   if (!result.success) {

@@ -25,13 +25,13 @@ export function HeaderAuth() {
             Students
           </Link>
         </Button>
-        <Profile user={session.data.user} />
+        <Profile user={session.data?.user} />
       </div>
     );
   } else {
     authContent = (
       <div className="flex gap-4">
-        <form action={signIn}>
+        <form action={signIn} className="hidden md:block">
           <Button variant="secondary" type="submit">
             Sign In
           </Button>
