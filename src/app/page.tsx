@@ -20,12 +20,12 @@ export default async function Home() {
 
   return (
     <main
-      className={`flex min-h-dvh flex-col px-6 md:p-24 ${
+      className={`flex min-h-dvh flex-col px-6 lg:px-24 pb-24 ${
         !hasUserId ? "items-center justify-center" : ""
       } text-center md:text-left`}
     >
       <article className="py-10">
-        <h1 className="text-2xl sm:text-4xl md:text-7xl text-teal-800 font-bold leading-normal lg:leading-none">
+        <h1 className="text-2xl md:text-4xl lg:text-7xl text-teal-800 font-bold leading-normal lg:leading-none">
           <span className="text-blue-600">Welcome to EduPurse</span> -
           <br className="hidden md:block" /> Your Ultimate Payment Tracking
           Solution.
@@ -48,8 +48,8 @@ export default async function Home() {
 
       {hasUserId ? (
         <article className="mt-10">
-          <div className="flex justify-between">
-            <h2 className="text-2xl mb-4 font-medium text-teal-600">
+          <div className="flex justify-between items-center pb-4">
+            <h2 className="text-lg lg:text-2xl font-medium text-teal-600">
               Recent Students
             </h2>
 

@@ -26,12 +26,12 @@ export default async function StudentPage({ params }: StudentPageParams) {
 
   return (
     <main className="min-h-screen">
-      <div className="flex py-10 px-24 items-center justify-between gap-10 border-b">
+      <div className="flex py-10 px-6 lg:px-24 items-center justify-between gap-10 border-b">
         <h2 className="text-3xl font-bold text-slate-800">{student.name}</h2>
         <Button variant="secondary">Update</Button>
       </div>
 
-      <div className="px-24 pb-24">
+      <div className="px-6 lg:px-24 pb-24">
         <section className="py-10">
           <h3 className="pb-10 text-2xl font-semibold text-slate-800">
             Profile Information
