@@ -2,8 +2,7 @@ import { signIn } from "@/actions";
 import { auth } from "@/auth";
 import StudentsTable from "@/components/student/students-table";
 import { Button } from "@/components/ui/button";
-import { db } from "@/db";
-import { fetchStudentsByUserId } from "@/db/queries";
+import { fetchRecentStudents } from "@/db/queries";
 import { paths } from "@/paths";
 import Link from "next/link";
 
@@ -11,10 +10,7 @@ export default async function Home() {
   const session = await auth();
   const user = session?.user;
 
-  const students = await fetchStudentsByUserId(user?.id || "");
-  const recentStudents = students.filter(
-    (student) => new Date().getMonth() - student.admissionDate.getMonth() <= 2
-  );
+  const recentStudents = await fetchRecentStudents(user?.id || "");
 
   const hasUserId = user?.id;
 
