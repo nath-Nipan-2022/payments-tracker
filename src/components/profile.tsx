@@ -77,7 +77,7 @@ export default function Profile({ user }: ProfileProps) {
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
-          <Link href={paths.newStudent(user.id)}>
+          <Link href={paths.newStudent(user.id || "")}>
             <DropdownMenuItem>
               <Plus className="mr-2 h-4 w-4" />
               <span>New Student</span>
