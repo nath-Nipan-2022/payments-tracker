@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   Drawer,
   DrawerContent,
@@ -27,6 +29,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { Loader2 } from "lucide-react";
 
 import { createPayment } from "@/actions";
 import { payingMonthData } from "@/lib/data";
@@ -37,6 +40,9 @@ import { z } from "zod";
 import { DatePicker } from "../date-picker";
 
 export default function MakePaymentForm({ studentId }: { studentId: string }) {
+  const [open, setOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string[] | undefined>();
+
   const form = useForm<z.infer<typeof paymentSchema>>({
     resolver: zodResolver(paymentSchema),
     defaultValues: {
@@ -44,12 +50,20 @@ export default function MakePaymentForm({ studentId }: { studentId: string }) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof paymentSchema>) {
-    createPayment(studentId, { errors: {} }, values);
+  const { isSubmitting } = form.formState;
+
+  async function onSubmit(values: z.infer<typeof paymentSchema>) {
+    const data = await createPayment(studentId, values);
+    if (data?.errors._form) {
+      return setError(data.errors._form);
+    }
+    setOpen(false);
+    form.reset();
+    setError(undefined);
   }
 
   return (
-    <Drawer>
+    <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Button>Make Payment</Button>
       </DrawerTrigger>
@@ -121,9 +135,17 @@ export default function MakePaymentForm({ studentId }: { studentId: string }) {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
                 Submit
               </Button>
+              {error && (
+                <div className="text-red-600 font-medium text-center">
+                  {error.join(",")}
+                </div>
+              )}
             </form>
           </Form>
         </div>

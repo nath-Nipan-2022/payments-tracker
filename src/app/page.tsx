@@ -1,5 +1,6 @@
 import { signIn } from "@/actions";
 import { auth } from "@/auth";
+import { CreateStudentProfile } from "@/components/student/create-student-profile";
 import StudentsTable from "@/components/student/students-table";
 import { Button } from "@/components/ui/button";
 import { fetchRecentStudents } from "@/db/queries";
@@ -31,9 +32,7 @@ export default async function Home() {
         </p>
         <div className="mt-8 flex justify-center md:justify-start">
           {hasUserId ? (
-            <Button asChild>
-              <Link href={paths.newStudent(hasUserId)}>Add New Student</Link>
-            </Button>
+            <CreateStudentProfile />
           ) : (
             <form action={signIn}>
               <Button>Sign in with Google</Button>

@@ -58,7 +58,18 @@ export default function StudentsTable({
         );
       },
     },
-    { label: "Name", render: ({ name }) => name, sortBy: "name" },
+    {
+      label: "Name",
+      render: ({ id, name, userId }) => (
+        <Link
+          href={paths.showStudent(userId, `${id}`)}
+          className="hover:text-blue-500"
+        >
+          {name}
+        </Link>
+      ),
+      sortBy: "name",
+    },
     {
       label: "Class",
       render: (student) => student.class,

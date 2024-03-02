@@ -1,7 +1,5 @@
 "use client";
 
-import { createStudent } from "@/actions";
-
 import {
   Form,
   FormControl,
@@ -19,31 +17,58 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DatePicker } from "../date-picker";
 
+import { classFieldsData } from "@/lib/data";
 import { studentSchema } from "@/schemas/student-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { classFieldsData } from "@/lib/data";
+import { Button } from "../ui/button";
+import { CreateStudentState } from "@/actions/create-student";
 
-export default function CreateStudentForm() {
+interface StudentFormProps {
+  defaultValues?: {
+    name: string;
+    class: string;
+    phone_number: string;
+    admission_date: Date;
+  };
+  formAction: (
+    values: z.infer<typeof studentSchema>
+  ) => Promise<CreateStudentState>;
+  onSuccess: () => void;
+}
+
+export default function StudentForm({
+  defaultValues,
+  formAction,
+  onSuccess,
+}: StudentFormProps) {
+  const [error, setError] = useState<string[] | undefined>();
+
   const form = useForm<z.infer<typeof studentSchema>>({
     resolver: zodResolver(studentSchema),
-    defaultValues: {
+    defaultValues: defaultValues || {
       name: "",
       phone_number: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof studentSchema>) {
-    createStudent({ errors: {} }, values);
-  }
-
   const { isSubmitting } = form.formState;
+
+  async function onSubmit(values: z.infer<typeof studentSchema>) {
+    const data = await formAction(values);
+    if (data?.errors._form) {
+      return setError(data.errors._form);
+    }
+    onSuccess();
+    form.reset();
+    setError(undefined);
+  }
 
   return (
     <>
@@ -68,7 +93,10 @@ export default function CreateStudentForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Class</FormLabel>
-                <Select onValueChange={field.onChange}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select Class" />
@@ -116,11 +144,15 @@ export default function CreateStudentForm() {
               </FormItem>
             )}
           />
-
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Submit
           </Button>
+          {error && (
+            <div className="text-red-600 font-medium text-center">
+              {error.join(",")}
+            </div>
+          )}
         </form>
       </Form>
     </>

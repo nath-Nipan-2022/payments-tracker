@@ -1,10 +1,9 @@
-import { deleteStudent } from "@/actions/delete-student";
 import MakePaymentForm from "@/components/payment/make-payment-form";
 import PaymentsTable from "@/components/payment/payments-table";
+import RemoveStudentProfile from "@/components/student/remove-student-profile";
 import StudentShow from "@/components/student/student-show";
+import { UpdateStudentProfile } from "@/components/student/update-student-profile";
 
-import { Button } from "@/components/ui/button";
-import { db } from "@/db";
 import { fetchPayments, fetchStudent } from "@/db/queries";
 import { notFound } from "next/navigation";
 
@@ -28,7 +27,7 @@ export default async function StudentPage({ params }: StudentPageParams) {
     <main className="min-h-screen">
       <div className="flex py-10 px-6 lg:px-24 items-center justify-between gap-10 border-b">
         <h2 className="text-3xl font-bold text-slate-800">{student.name}</h2>
-        <Button variant="secondary">Update</Button>
+        <UpdateStudentProfile student={student} />
       </div>
 
       <div className="px-6 lg:px-24 pb-24">
@@ -56,12 +55,12 @@ export default async function StudentPage({ params }: StudentPageParams) {
             </h4>
           ) : (
             <div className="py-10">
-              <PaymentsTable payments={payments} />
+              <PaymentsTable payments={payments} studentId={params.id} />
             </div>
           )}
         </section>
 
-        <section className="flex justify-between gap-10 py-10 items-center px-10 border rounded-xl border-red-400">
+        <section className="flex flex-wrap justify-between gap-10 py-10 items-center px-10 border rounded-xl border-red-400">
           <div>
             <h3 className="text-2xl font-semibold text-slate-800">
               Delete this profile
@@ -71,12 +70,8 @@ export default async function StudentPage({ params }: StudentPageParams) {
               irreversible and can not be undone.
             </p>
           </div>
-          <Button
-            variant="destructive"
-            // onClick={() => deleteStudent(params.id)}
-          >
-            Delete
-          </Button>
+
+          <RemoveStudentProfile id={params.id} />
         </section>
       </div>
     </main>

@@ -5,8 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-import CreateStudentForm from "@/components/student/create-student-form";
+import { CreateNewStudent } from "./create-new-student";
 
 export default function CreateStudentPage() {
   return (
@@ -17,7 +16,7 @@ export default function CreateStudentPage() {
           <CardDescription>Add new member in your batch.</CardDescription>
         </CardHeader>
         <CardContent>
-          <CreateStudentForm />
+          <CreateNewStudent />
         </CardContent>
       </Card>
     </main>

@@ -47,7 +47,7 @@ export default function Profile({ user }: ProfileProps) {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 mr-12">
+      <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
@@ -86,12 +86,6 @@ export default function Profile({ user }: ProfileProps) {
           </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <Link href="https://github.com/nath-Nipan-2022">
-          <DropdownMenuItem>
-            <Github className="mr-2 h-4 w-4" />
-            <span>GitHub</span>
-          </DropdownMenuItem>
-        </Link>
         <DropdownMenuItem>
           <LifeBuoy className="mr-2 h-4 w-4" />
           <span>Support</span>

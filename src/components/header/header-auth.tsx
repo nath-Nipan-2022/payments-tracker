@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Button } from "../ui/button";
 import { paths } from "@/paths";
+import { Github } from "lucide-react";
 
 export function HeaderAuth() {
   const session = useSession();
@@ -16,13 +17,18 @@ export function HeaderAuth() {
     authContent = null;
   } else if (session.data?.user) {
     authContent = (
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-2">
         <Button asChild variant="link">
           <Link
             href={paths.showAllStudents(session.data?.user?.id || "")}
             className="font-medium"
           >
             Students
+          </Link>
+        </Button>
+        <Button asChild variant="link">
+          <Link href="https://github.com/nath-Nipan-2022">
+            <Github className="mr-2 h-4 w-4" />
           </Link>
         </Button>
         <Profile user={session.data?.user} />

@@ -1,5 +1,8 @@
+"use client";
+
 import { Payment } from "@prisma/client";
 
+import { deletePayment } from "@/actions";
 import {
   Table,
   TableBody,
@@ -9,12 +12,17 @@ import {
   TableRow,
 } from "../ui/table";
 import { Checkbox } from "../ui/checkbox";
+import { DeleteButton } from "../delete-button";
 
 interface PaymentsTableProps {
   payments: Payment[];
+  studentId: string;
 }
 
-export default function PaymentsTable({ payments }: PaymentsTableProps) {
+export default function PaymentsTable({
+  payments,
+  studentId,
+}: PaymentsTableProps) {
   return (
     <div className="rounded-md border">
       <Table>
@@ -24,6 +32,7 @@ export default function PaymentsTable({ payments }: PaymentsTableProps) {
             <TableHead className="text-nowrap">Paying Month</TableHead>
             <TableHead>Payment Date</TableHead>
             <TableHead className="text-right">Amount</TableHead>
+            <TableHead className="text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -34,6 +43,8 @@ export default function PaymentsTable({ payments }: PaymentsTableProps) {
               style: "currency",
               currency: "INR",
             }).format(paymentAmount);
+
+            const action = deletePayment.bind(null, studentId, `${id}`);
 
             return (
               <TableRow key={id}>
@@ -53,6 +64,11 @@ export default function PaymentsTable({ payments }: PaymentsTableProps) {
                 <TableCell>{paymentDate.toLocaleDateString()}</TableCell>
                 <TableCell className="text-right font-medium">
                   {formattedAmount}
+                </TableCell>
+                <TableCell className="text-right">
+                  <form action={action}>
+                    <DeleteButton />
+                  </form>
                 </TableCell>
               </TableRow>
             );
