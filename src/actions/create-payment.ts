@@ -5,20 +5,22 @@ import { db } from "@/db";
 import { paths } from "@/paths";
 import { paymentSchema } from "@/schemas/payment-schema";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 
 interface CreatePaymentState {
   errors: {
+    amount?: string[] | undefined;
+    payingMonth?: string[] | undefined;
+    date?: string[] | undefined;
     _form?: string[];
   };
+  success?: boolean;
 }
 
 export async function createPayment(
   slug: string,
-  state: CreatePaymentState,
   data: z.infer<typeof paymentSchema>
-) {
+): Promise<CreatePaymentState> {
   const result = paymentSchema.safeParse(data);
 
   if (!result.success) {
@@ -30,7 +32,9 @@ export async function createPayment(
   const session = await auth();
   if (!session?.user) {
     return {
-      errors: ["You must be signed in to create a payment"],
+      errors: {
+        _form: ["You must be signed in to create a payment"],
+      },
     };
   }
 
@@ -60,4 +64,9 @@ export async function createPayment(
   }
 
   revalidatePath(paths.showStudent(session.user.id || "", slug));
+
+  return {
+    errors: { _form: [] },
+    success: true,
+  };
 }
