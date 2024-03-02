@@ -1,20 +1,26 @@
+"use server";
+
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { paths } from "@/paths";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-interface deleteStudentState {
+interface DeleteStudentState {
   errors?: {
     _form?: string[];
   };
 }
 
-export async function deleteStudent(studentId: string) {
+export async function deleteStudent(
+  studentId: string
+): Promise<DeleteStudentState> {
   const session = await auth();
   if (!session?.user) {
     return {
-      errors: ["You must be signed in to create a payment"],
+      errors: {
+        _form: ["You are not signed in!"],
+      },
     };
   }
 
@@ -22,6 +28,9 @@ export async function deleteStudent(studentId: string) {
     await db.student.delete({
       where: {
         id: parseInt(studentId),
+      },
+      include: {
+        payments: true,
       },
     });
   } catch (err) {

@@ -9,21 +9,23 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-interface CreateStudentState {
+export interface CreateStudentState {
   errors: {
     _form?: string[];
   };
 }
 
 export async function createStudent(
-  state: CreateStudentState,
   data: z.infer<typeof studentSchema>
-) {
+): Promise<CreateStudentState> {
   const result = studentSchema.safeParse(data);
 
   if (!result.success) {
     return {
-      errors: result.error.flatten().fieldErrors,
+      errors: {
+        ...result.error.flatten().fieldErrors,
+        _form: [],
+      },
     };
   }
 
