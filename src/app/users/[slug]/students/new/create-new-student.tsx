@@ -2,12 +2,10 @@
 
 import { createStudent } from "@/actions";
 import StudentForm from "@/components/common/student-form";
-import { studentSchema } from "@/schemas/student-schema";
-import { z } from "zod";
+import { StudentSchemaType } from "@/schemas/student-schema";
 
 export const CreateNewStudent = () => {
-  const formAction = (values: z.infer<typeof studentSchema>) =>
-    createStudent(values);
+  const formAction = (values: StudentSchemaType) => createStudent(values);
 
   return <StudentForm formAction={formAction} onSuccess={() => {}} />;
 };

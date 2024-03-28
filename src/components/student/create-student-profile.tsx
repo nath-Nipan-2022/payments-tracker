@@ -16,14 +16,12 @@ import {
 import StudentForm from "../common/student-form";
 
 import { createStudent } from "@/actions";
-import { studentSchema } from "@/schemas/student-schema";
-import { z } from "zod";
+import { StudentSchemaType } from "@/schemas/student-schema";
 
 export function CreateStudentProfile() {
   const [open, setOpen] = useState(false);
 
-  const formAction = (values: z.infer<typeof studentSchema>) =>
-    createStudent(values);
+  const formAction = (values: StudentSchemaType) => createStudent(values);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

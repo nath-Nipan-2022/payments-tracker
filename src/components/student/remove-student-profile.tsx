@@ -54,8 +54,8 @@ export default function RemoveStudentProfile({
             account and remove your data from our servers.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogFooter className="justify-between">
+          <AlertDialogCancel className="mt-0">Cancel</AlertDialogCancel>
           <form onSubmit={handleSubmit}>
             <Button variant="destructive" disabled={loading}>
               Delete

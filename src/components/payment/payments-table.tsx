@@ -11,8 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { Checkbox } from "../ui/checkbox";
 import { DeleteButton } from "../delete-button";
+import { Badge } from "../ui/badge";
 
 interface PaymentsTableProps {
   payments: Payment[];
@@ -28,8 +28,8 @@ export default function PaymentsTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Status</TableHead>
             <TableHead className="text-nowrap">Paying Month</TableHead>
+            <TableHead>Status</TableHead>
             <TableHead>Payment Date</TableHead>
             <TableHead className="text-right">Amount</TableHead>
             <TableHead className="text-right">Action</TableHead>
@@ -48,19 +48,12 @@ export default function PaymentsTable({
 
             return (
               <TableRow key={id}>
-                <TableCell>
-                  {
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <Checkbox
-                        checked={isPaid}
-                        aria-label="Payment Status"
-                        className="cursor-default"
-                      />
-                      {isPaid ? "Success" : "Pending"}
-                    </div>
-                  }
-                </TableCell>
                 <TableCell>{payingMonth}</TableCell>
+                <TableCell>
+                  <Badge variant={isPaid ? "success" : "pending"}>
+                    {isPaid ? "Success" : "Pending"}
+                  </Badge>
+                </TableCell>
                 <TableCell>{paymentDate.toLocaleDateString()}</TableCell>
                 <TableCell className="text-right font-medium">
                   {formattedAmount}

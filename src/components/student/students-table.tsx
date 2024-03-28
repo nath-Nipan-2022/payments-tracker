@@ -1,5 +1,7 @@
 "use client";
 
+import { ReactNode, useState } from "react";
+
 import {
   Table,
   TableBody,
@@ -13,6 +15,8 @@ import { paths } from "@/paths";
 import { Student } from "@prisma/client";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -22,12 +26,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
 
-import { useSort } from "@/lib/use-sort";
-import { Checkbox } from "../ui/checkbox";
 import { StudentWithData } from "@/db/queries";
-import { ReactNode } from "react";
-import { getMonthsCount } from "@/lib/data";
+import { useSort } from "@/lib/use-sort";
 
 interface headerType {
   label: string;
@@ -43,18 +45,16 @@ export default function StudentsTable({
   const headers: headerType[] = [
     {
       label: "Status",
-      render: ({ _count, admissionDate }) => {
-        const status =
-          _count.payments === getMonthsCount(admissionDate, new Date());
+      render: ({ payments }) => {
+        const isPaid = payments.some(
+          ({ payingMonth }) =>
+            payingMonth ===
+            new Date().toLocaleString("default", { month: "long" })
+        );
         return (
-          <div className="flex items-center gap-3 flex-wrap">
-            <Checkbox
-              checked={status}
-              aria-label="Payment Status"
-              className="cursor-default"
-            />
-            {status ? "Success" : "Pending"}
-          </div>
+          <Badge variant={isPaid ? "success" : "pending"}>
+            {isPaid ? "Success" : "Pending"}
+          </Badge>
         );
       },
     },
@@ -63,7 +63,7 @@ export default function StudentsTable({
       render: ({ id, name, userId }) => (
         <Link
           href={paths.showStudent(userId, `${id}`)}
-          className="hover:text-blue-500"
+          className="font-medium hover:text-blue-500"
         >
           {name}
         </Link>
@@ -71,13 +71,13 @@ export default function StudentsTable({
       sortBy: "name",
     },
     {
+      label: "Phone Number",
+      render: ({ phoneNumber }) => phoneNumber,
+    },
+    {
       label: "Class",
       render: (student) => student.class,
       sortBy: "class",
-    },
-    {
-      label: "Phone Number",
-      render: ({ phone_number }) => phone_number,
     },
     {
       label: "Admission Date",
@@ -86,68 +86,86 @@ export default function StudentsTable({
   ];
 
   const { sortedData: sortedStudents, handleSort } = useSort(students);
+  const [query, setQuery] = useState("");
+
+  let filteredStudents = sortedStudents;
+  if (query.length > 3) {
+    filteredStudents = sortedStudents.filter((s) =>
+      s.name.toLowerCase().includes(query.toLowerCase())
+    );
+  }
 
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {headers.map(({ label, sortBy }) => {
-              if (sortBy)
-                return (
-                  <TableHead key={label}>
-                    <Button
-                      variant="ghost"
-                      className="p-0"
-                      onClick={() => handleSort(sortBy)}
-                    >
-                      {label}
-                      <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                  </TableHead>
-                );
-              return <TableHead key={label}>{label}</TableHead>;
-            })}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {sortedStudents.map((student) => {
-            const { userId } = student;
-            return (
-              <TableRow key={student.id}>
-                {headers.map((row) => {
+    <div>
+      <div className="flex items-center py-4">
+        <Input
+          placeholder="Filter names..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="max-w-sm"
+        />
+      </div>
+      <div className="rounded-md border shadow">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {headers.map(({ label, sortBy }) => {
+                if (sortBy)
                   return (
-                    <TableCell key={student.id + row.label}>
-                      {row.render(student)}
-                    </TableCell>
-                  );
-                })}
-
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <Link
-                        href={paths.showStudent(userId, `${student.id}`)}
-                        className="hover:text-blue-500"
+                    <TableHead key={label}>
+                      <Button
+                        variant="ghost"
+                        className="p-0"
+                        onClick={() => handleSort(sortBy)}
                       >
-                        <DropdownMenuItem>View Student</DropdownMenuItem>
-                      </Link>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+                        {label}
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </TableHead>
+                  );
+                return <TableHead key={label}>{label}</TableHead>;
+              })}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredStudents.map((student) => {
+              const { userId } = student;
+              return (
+                <TableRow key={student.id}>
+                  {headers.map((row) => {
+                    return (
+                      <TableCell key={student.id + row.label}>
+                        {row.render(student)}
+                      </TableCell>
+                    );
+                  })}
+
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <Link
+                          href={paths.showStudent(userId, `${student.id}`)}
+                          className="hover:text-blue-500"
+                        >
+                          <DropdownMenuItem>View Student</DropdownMenuItem>
+                        </Link>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

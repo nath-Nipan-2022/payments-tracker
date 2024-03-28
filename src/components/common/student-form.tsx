@@ -20,26 +20,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { DatePicker } from "../date-picker";
 
+import { CreateStudentState } from "@/actions/create-student";
 import { classFieldsData } from "@/lib/data";
-import { studentSchema } from "@/schemas/student-schema";
+import { StudentSchemaType, studentSchema } from "@/schemas/student-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "../ui/button";
-import { CreateStudentState } from "@/actions/create-student";
 
 interface StudentFormProps {
-  defaultValues?: {
-    name: string;
-    class: string;
-    phone_number: string;
-    admission_date: Date;
-  };
-  formAction: (
-    values: z.infer<typeof studentSchema>
-  ) => Promise<CreateStudentState>;
+  defaultValues?: StudentSchemaType;
+  formAction: (values: StudentSchemaType) => Promise<CreateStudentState>;
   onSuccess: () => void;
 }
 
@@ -50,17 +42,19 @@ export default function StudentForm({
 }: StudentFormProps) {
   const [error, setError] = useState<string[] | undefined>();
 
-  const form = useForm<z.infer<typeof studentSchema>>({
+  const form = useForm<StudentSchemaType>({
     resolver: zodResolver(studentSchema),
     defaultValues: defaultValues || {
       name: "",
-      phone_number: "",
+      class: "",
+      schoolName: "",
+      phoneNumber: "",
     },
   });
 
   const { isSubmitting } = form.formState;
 
-  async function onSubmit(values: z.infer<typeof studentSchema>) {
+  async function onSubmit(values: StudentSchemaType) {
     const data = await formAction(values);
     if (data?.errors._form) {
       return setError(data.errors._form);
@@ -89,6 +83,19 @@ export default function StudentForm({
           />
           <FormField
             control={form.control}
+            name="schoolName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>School</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter school name..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="class"
             render={({ field }) => (
               <FormItem>
@@ -99,7 +106,7 @@ export default function StudentForm({
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select Class" />
+                      <SelectValue placeholder="select..." />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent position="popper">
@@ -116,7 +123,7 @@ export default function StudentForm({
           />
           <FormField
             control={form.control}
-            name="phone_number"
+            name="phoneNumber"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Phone Number</FormLabel>
@@ -129,7 +136,7 @@ export default function StudentForm({
           />
           <FormField
             control={form.control}
-            name="admission_date"
+            name="admissionDate"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Admission Date</FormLabel>

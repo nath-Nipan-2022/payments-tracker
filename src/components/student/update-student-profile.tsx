@@ -16,21 +16,15 @@ import { Button } from "@/components/ui/button";
 import StudentForm from "../common/student-form";
 
 import { updateStudent } from "@/actions";
-import { studentSchema } from "@/schemas/student-schema";
-import { z } from "zod";
+import { StudentSchemaType } from "@/schemas/student-schema";
 
 export function UpdateStudentProfile({ student }: { student: Student }) {
   const [open, setOpen] = useState(false);
 
-  const formAction = (values: z.infer<typeof studentSchema>) =>
+  const formAction = (values: StudentSchemaType) =>
     updateStudent(`${student.id}`, values);
 
-  const defaultValues = {
-    name: student.name,
-    class: student.class,
-    phone_number: student.phone_number,
-    admission_date: student.admissionDate,
-  };
+  const defaultValues = student;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

@@ -3,11 +3,10 @@
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { paths } from "@/paths";
-import { studentSchema } from "@/schemas/student-schema";
+import { StudentSchemaType, studentSchema } from "@/schemas/student-schema";
 import { Student } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { z } from "zod";
 
 export interface UpdateStudentState {
   errors: {
@@ -17,7 +16,7 @@ export interface UpdateStudentState {
 
 export async function updateStudent(
   id: string,
-  data: z.infer<typeof studentSchema>
+  data: StudentSchemaType
 ): Promise<UpdateStudentState> {
   const result = studentSchema.safeParse(data);
 
@@ -42,12 +41,7 @@ export async function updateStudent(
   let student: Student;
   try {
     student = await db.student.update({
-      data: {
-        name: result.data.name,
-        class: result.data.class,
-        phone_number: result.data.phone_number,
-        admissionDate: result.data.admission_date,
-      },
+      data: { ...result.data },
       where: {
         id: parseInt(id),
         userId: session.user.id,

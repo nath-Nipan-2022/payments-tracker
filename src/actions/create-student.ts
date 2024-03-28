@@ -3,11 +3,10 @@
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { paths } from "@/paths";
-import { studentSchema } from "@/schemas/student-schema";
+import { StudentSchemaType, studentSchema } from "@/schemas/student-schema";
 import { Student } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { z } from "zod";
 
 export interface CreateStudentState {
   errors: {
@@ -16,7 +15,7 @@ export interface CreateStudentState {
 }
 
 export async function createStudent(
-  data: z.infer<typeof studentSchema>
+  data: StudentSchemaType
 ): Promise<CreateStudentState> {
   const result = studentSchema.safeParse(data);
 
@@ -42,10 +41,7 @@ export async function createStudent(
   try {
     student = await db.student.create({
       data: {
-        name: result.data.name,
-        class: result.data.class,
-        phone_number: result.data.phone_number,
-        admissionDate: result.data.admission_date,
+        ...result.data,
         userId: session?.user?.id || "",
       },
     });

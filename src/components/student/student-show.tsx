@@ -20,6 +20,7 @@ export default function StudentShow({ student }: StudentShowProps) {
         <TableHeader>
           <TableRow>
             <TableHead className="text-nowrap">Name</TableHead>
+            <TableHead className="text-nowrap">School</TableHead>
             <TableHead>Class</TableHead>
             <TableHead>Admission Date</TableHead>
             <TableHead className="text-right">Phone Number</TableHead>
@@ -28,9 +29,10 @@ export default function StudentShow({ student }: StudentShowProps) {
         <TableBody>
           <TableRow key={student.id}>
             <TableCell className="font-medium">{student.name}</TableCell>
+            <TableCell className="font-medium">{student.schoolName}</TableCell>
             <TableCell>{student.class}</TableCell>
             <TableCell>{student.admissionDate.toLocaleDateString()}</TableCell>
-            <TableCell className="text-right">{student.phone_number}</TableCell>
+            <TableCell className="text-right">{student.phoneNumber}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

@@ -4,7 +4,7 @@ import RemoveStudentProfile from "@/components/student/remove-student-profile";
 import StudentShow from "@/components/student/student-show";
 import { UpdateStudentProfile } from "@/components/student/update-student-profile";
 
-import { fetchPayments, fetchStudent } from "@/db/queries";
+import { fetchStudentWithPayments } from "@/db/queries";
 import { notFound } from "next/navigation";
 
 interface StudentPageParams {
@@ -15,13 +15,11 @@ interface StudentPageParams {
 }
 
 export default async function StudentPage({ params }: StudentPageParams) {
-  const student = await fetchStudent(params.id, params.slug);
+  const student = await fetchStudentWithPayments(params.id, params.slug);
 
   if (!student) {
     return notFound();
   }
-
-  const payments = await fetchPayments(params.slug, params.id);
 
   return (
     <main className="min-h-screen">
@@ -43,19 +41,22 @@ export default async function StudentPage({ params }: StudentPageParams) {
             <h3 className="text-2xl font-semibold text-slate-800">
               Payment Details
             </h3>
-            <MakePaymentForm studentId={student.id.toString()} />
+            <MakePaymentForm studentId={params.id} />
           </div>
-          <p className="text-gray-500 mt-3">
+          <p className="text-gray-500 py-4">
             This includes all the information about payments.
           </p>
 
-          {payments.length < 1 ? (
-            <h4 className="py-10 text-center text-lg font-semibold text-gray-600">
-              Student has not started any payments yet
+          {student.payments.length < 1 ? (
+            <h4 className="text-xl font-semibold text-gray-600">
+              No payments to display.
             </h4>
           ) : (
             <div className="py-10">
-              <PaymentsTable payments={payments} studentId={params.id} />
+              <PaymentsTable
+                payments={student.payments}
+                studentId={params.id}
+              />
             </div>
           )}
         </section>
