@@ -61,7 +61,8 @@ model Student {
   name          String
   userId        String
   class         String
-  phone_number  String
+  schoolName    String
+  phoneNumber   String
   admissionDate DateTime @default(now())
 
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
